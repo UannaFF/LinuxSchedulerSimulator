@@ -25,6 +25,16 @@ public class Main {
 		// FUNCIONA A LA PREFECCION 
 	// ################################ FIN DE LAS PRUEBAS ###########################################
 
+	// ################# Hilo Despachador ######################################
+
+		// Leer Archivo con lista de Procesos
+
+		// Creacion de los procesos
+
+		// (iterar) Paso de Procesos al Hilo despachador segun su tiempo de entrada
+		Hilo_despachador despachador = new Hilo_despachador(1);
+	// #################  Fin Hilo Despachador ################################
+
 	}
 
 }
