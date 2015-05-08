@@ -27,12 +27,20 @@ public class Main {
 
 	// ################# Hilo Despachador ######################################
 
+		// tiempo de relog
+
+		Integer tiempo = new Integer(0);
+
+		// levantamos el hilo relog que hara correr el tiempo
+		Hilo_relog relog = new Hilo_relog(tiempo);
+
 		// Leer Archivo con lista de Procesos
 
 		// Creacion de los procesos
 
 		// (iterar) Paso de Procesos al Hilo despachador segun su tiempo de entrada
 		Hilo_despachador despachador = new Hilo_despachador(1);
+
 	// #################  Fin Hilo Despachador ################################
 
 	}
