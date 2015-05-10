@@ -89,7 +89,7 @@ public class Main {
 		String process_file = "process_request_file.xml";
 
 		if(args.length <= 0) {
-			System.out.println("Se necesita colocar el nombre del archivo xml");
+			System.out.println("Se necesita colocar cantidad de procesadores");
 			return;
 		}
 
