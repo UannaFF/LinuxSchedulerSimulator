@@ -3,13 +3,18 @@
 *	Descripcion :: Clase que define el hilo despachador del simulador
 *	Estado :: Incompleto
 */
+import java.util.ArrayList;
 
 public class Hilo_despachador extends Thread {
 	
   Monitor_CL colas[] = null;
+  ArrayList<Procesos> procesos = null;
 
-	Hilo_despachador(int num_cpu){
+	Hilo_despachador(int num_cpu, ArrayList<Procesos> ps){
 		super("Despachador");
+
+    //Contiene todos los procesos
+    this.procesos = ps;
 
     Monitor_CL colas[] = new Monitor_CL[num_cpu];
 
