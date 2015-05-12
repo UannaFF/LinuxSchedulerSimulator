@@ -17,8 +17,17 @@ public class Hilo_CPU extends Thread {
 	}
 
 	public void run(){
-		
-      System.out.println("Trabjo un hilo CPU");
+		Procesos proceso_exec = null;
+		while(true){
+		/*	proceso_exec = colaListos.get_proceso();
+			if (proceso_exec != null) {
+				try{
+					sleep(10);
+				} catch (InterruptedException e ) {
+					System.out.println("Error al dormi el cpu");
+				}
+			}*/
+		}
 	
 	}
 }
