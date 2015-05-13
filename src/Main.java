@@ -10,7 +10,8 @@ import java.io.*;
 
 public class Main {
 	// hilo principal de ejecucion
-	static ArrayList<Procesos> procesos = new ArrayList<Procesos>();
+	static ArrayList<Proceso> procesos = new ArrayList<Proceso>();
+    static TreeMap<Integer, Proceso> procesosTreemap = new TreeMap<Integer, Proceso>();
 
 	/*
 	*Funcion para leer del archivo xml: recibe el nombre del archivo
@@ -18,17 +19,16 @@ public class Main {
 	*/
 	public static void readXML(String xml) {
 		int cantProcess = 0;
-		Document dom;
-        // Make an  instance of the DocumentBuilderFactory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
         try {
             //Se usa el documentBuilder para convertir el archivo xml
             DocumentBuilder db = dbf.newDocumentBuilder();
-
-            dom = db.parse(xml);
-
+            Document dom = db.parse(xml);
             Element doc = dom.getDocumentElement();
+
             NodeList nl;
+
             //Toma todos los nodos que tienen el nombre de Process.
     		nl = doc.getElementsByTagName("Process");
     		cantProcess = nl.getLength();
@@ -68,7 +68,8 @@ public class Main {
 	    			res.add(new Pair<String,Integer>(valType,value));
 	    		}
 
-	    		procesos.add(new Procesos(i, pType, priority, arTime, res)); //Se crea el proceso con sus datos
+                //Se crea el proceso con sus datos y ordenan por tiempo de llegada (en un Treemap)
+                procesosTreemap.put(new Integer(arTime), new Proceso(i, pType, priority, arTime, res));	    		 
     			
     		}
 
@@ -93,13 +94,20 @@ public class Main {
 		Integer tiempo = new Integer(0);
 
 		// levantamos el hilo relog que hara correr el tiempo
-		Hilo_relog relog = new Hilo_relog(tiempo);
+		Hilo_reloj reloj = new Hilo_reloj(tiempo);
 
 		// Leer Archivo con lista de Procesos
         readXML(process_file);
 
-		Hilo_despachador despachador = new Hilo_despachador(Integer.parseInt(args[0]), procesos);
+        //llena un arraymap con los procesos previamente cargados y ordenados por tiempo de llegada
+        while(procesosTreemap.firstEntry() != null) {
 
+            procesos.add(procesosTreemap.pollFirstEntry().getValue());
+            //System.out.println("Elemento del treemap: "+proceso.getValue().toString());
+        }
+
+		Hilo_despachador despachador = new Hilo_despachador(Integer.parseInt(args[0]), procesos);      
+        
 	}
 
 }

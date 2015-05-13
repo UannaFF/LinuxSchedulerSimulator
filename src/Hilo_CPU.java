@@ -17,7 +17,7 @@ public class Hilo_CPU extends Thread {
 	}
 
 	public void run(){
-		Procesos proceso_exec = null;
+		Proceso proceso_exec = null;
 		while(true){
 		/*	proceso_exec = colaListos.get_proceso();
 			if (proceso_exec != null) {
