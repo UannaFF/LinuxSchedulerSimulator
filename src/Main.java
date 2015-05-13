@@ -83,11 +83,6 @@ public class Main {
 	
 	public static void main(String args[]){
 
-<<<<<<< HEAD
-	// ################# Hilo principal ######################################
-
-		// tiempo de relog
-=======
 		String process_file = "process_request_file.xml";
 
 		if(args.length <= 0) {
