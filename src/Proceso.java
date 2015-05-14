@@ -11,11 +11,11 @@ public class Proceso {
 
 	public int pid = 0;
 	public String type = "";
-	public int arrivalTime = 0;
+	public Integer arrivalTime = 0;
 	public int priority = 0;
 	public ArrayList<Pair<String,Integer>> resources = null;
 
-	public Proceso(int pid, String s, int prior, int arriveT, ArrayList<Pair<String,Integer>> pAr){
+	public Proceso(int pid, String s, int prior, Integer arriveT, ArrayList<Pair<String,Integer>> pAr){
 
 		this.pid = pid;
 		this.type = s;
@@ -23,6 +23,14 @@ public class Proceso {
 		this.priority = prior;
 		this.resources = pAr;
 		
+	}
+
+	public Integer getArrivalTime(){
+		return this.arrivalTime;
+	}
+
+	public void setArrivalTime(Integer arrivalTime){
+		this.arrivalTime = arrivalTime;
 	}
 
 	public Pair<String,Integer> getFirstSource(){

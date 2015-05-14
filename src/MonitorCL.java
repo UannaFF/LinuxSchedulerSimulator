@@ -12,6 +12,11 @@ public class MonitorCL{
 	private TreeMap<Double, Proceso> colaListos = new TreeMap<Double, Proceso>();
 	private boolean vacio = true;
   private int carga = 0; //para indicar la carga q tiene en ciclos de reloj esta cola
+  private int id = 0;
+
+  public MonitorCL(int id){
+    this.id = id;
+  }
 
 	synchronized Proceso getProceso(){    
 
@@ -23,9 +28,6 @@ public class MonitorCL{
       vacio = true;
     }
 
-    /*se resta a la carga de la cola el tiempo de la siguiente 
-    operacion del proceso tomado siempre y cuando sea CPU
-    (para estar en esta cola la operacion debe ser de CPU)*/
     Pair<String,Integer> source = proceso.getValue().getFirstSource();
     if (source.getL().equals("CPU")){
       carga = carga - source.getR() ;
@@ -35,20 +37,17 @@ public class MonitorCL{
 	}
 
 	synchronized void addProcesoListo( Double peso, Proceso proceso){
-
-    System.out.println("Cola de Listos = se agrego un nuevo proceso ["+ proceso.toString() +"]");    
+  
     Pair<String,Integer> source = proceso.getFirstSource();
 
-    /*se sula a la carga de la cola el tiempo de la siguiente 
-    operacion del proceso tomado siempre y cuando sea CPU
-    (para haber llegado a esta cola la operacion debe ser de CPU)*/
     if (source.getL().equals("CPU")){
       carga = source.getR() + carga;
     }
 
     colaListos.put(peso, proceso);
     vacio = false;
-	
+
+    System.out.println("Cola de Listos "+this.id+"= se agrego un nuevo proceso ["+ proceso.toString() +"] - Carga actual: "+this.carga);	
 	}
 
   synchronized int getCarga(){

@@ -26,6 +26,7 @@ public class Main {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(xml);
             Element doc = dom.getDocumentElement();
+            Proceso proceso;
 
             NodeList nl;
 
@@ -69,7 +70,14 @@ public class Main {
 	    		}
 
                 //Se crea el proceso con sus datos y ordenan por tiempo de llegada (en un Treemap)
-                procesosTreemap.put(new Integer(arTime), new Proceso(i, pType, priority, arTime, res));	    		 
+                proceso= new Proceso(i, pType, priority, arTime, res);
+
+                Integer arrivalTime = (new Integer(arTime))*1000;
+                while(procesosTreemap.containsKey(arrivalTime))
+                    arrivalTime++;
+                procesosTreemap.put(arrivalTime, proceso);
+
+                //System.out.println("Se agrega elemento al treemap: "+proceso.toString()); 	    		 
     			
     		}
 
@@ -86,6 +94,9 @@ public class Main {
 
 		String processFile = "process_request_file.xml";
         Integer multiplier;
+        Ventana ventana = new Ventana();
+        Integer mainTime;
+        Proceso proceso;        
 
 		if(args.length <= 0) {
 			System.out.println("Se necesita colocar cantidad de procesadores");
@@ -96,6 +107,11 @@ public class Main {
             multiplier = 1;
         }
 
+        //se despliega la ventana del simulador
+        ventana.setBounds(500,250,600,600); // (posx,posy,width,height)
+        ventana.setVisible(true);
+        ventana.setResizable(true);
+
 		MonitorTime time = new MonitorTime();
 
 		// levantamos el hilo relog que hara correr el tiempo
@@ -105,13 +121,22 @@ public class Main {
         readXML(processFile);
 
         //llena un arraymap con los procesos previamente cargados y ordenados por tiempo de llegada
-        while(procesosTreemap.firstEntry() != null) {
+        /*while(procesosTreemap.firstEntry() != null) {
+            proceso = procesosTreemap.pollFirstEntry().getValue();
+            procesos.add(proceso); 
+            //System.out.println("Elemento del treemap: "+proceso.toString());           
+        }*/
 
-            procesos.add(procesosTreemap.pollFirstEntry().getValue());
-            //System.out.println("Elemento del treemap: "+proceso.getValue().toString());
+        HiloDespachador despachador = new HiloDespachador(Integer.parseInt(args[0]), procesosTreemap, time);  
+
+        while(true){
+            mainTime = time.getTime();
+
+            ventana.setTime(Integer.toString(mainTime));
+            while (mainTime == time.getTime());
         }
 
-		HiloDespachador despachador = new HiloDespachador(Integer.parseInt(args[0]), procesos, time);      
+		    
         
 	}
 

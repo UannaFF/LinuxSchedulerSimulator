@@ -3,16 +3,16 @@
 *	Descripcion :: Clase que define el hilo despachador del simulador
 *	Estado :: Incompleto
 */
-import java.util.ArrayList;
+import java.util.*;
 
 public class HiloDespachador extends Thread {
 	
   int numCpu = 0;
   MonitorCL colas[] = null;
   MonitorTime time = null;
-  ArrayList<Proceso> procesos = null;
+  TreeMap<Integer, Proceso> procesos = null;
 
-	HiloDespachador(int numCpu, ArrayList<Proceso> ps, MonitorTime time){
+	HiloDespachador(int numCpu, TreeMap<Integer, Proceso> procesosTreemap, MonitorTime time){
 		super("Despachador");
 
     this.colas = new MonitorCL[numCpu];
@@ -20,9 +20,10 @@ public class HiloDespachador extends Thread {
     this.time = time;
 
     //Contiene todos los procesos
-    this.procesos = ps;
+    this.procesos = procesosTreemap;
 
     for (int i = 0; i < numCpu ; i++) {
+      colas[i] = new MonitorCL(i);
       HiloCPU cpu = new HiloCPU(colas[i], time, i , 4);
     }
     // levantamos los cpus requeridos y les asignamos sus colas de procesos listos
@@ -34,23 +35,35 @@ public class HiloDespachador extends Thread {
 	}
 
   public void run(){ 
-    
+    Pair<String,Integer> source;
+    Integer arrivalTime;
     while(true){
-      /* -Debe consultar frecuentemente el tiempo esperando q sea el turno del siguiente 
-      proceso a ser despachado a una de las colas de los procesadores
-        -Cuando sea el tiempo debe recorrer el arreglo de colas buscando cual tiene menor peso y asignarle 
-        el proceso a esa cola si se trata de operaciones de CPU
-        -Definir q pasara si son operaciones de entrada y salida*/
     
-      if (!procesos.isEmpty()) {
-        Proceso entrante = procesos.get(0);
+      if (procesos.firstEntry() != null) {
+        Proceso entrante = procesos.firstEntry().getValue();
 
-        int tiempo = time.getTime();
+        arrivalTime = entrante.getArrivalTime();
+        if (time.getTime() >= arrivalTime) {          
+          entrante = procesos.pollFirstEntry().getValue();
 
-        if (tiempo >= entrante.arrivalTime) {
-          System.out.println("tiempo:: "+tiempo+" >> Un proceso solicita recursos");
-          procesos.remove(0);
-          distribuir(entrante);         
+          source = entrante.getFirstSource();
+
+
+          if (source.getL().equals("CPU")){
+
+            System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita CPU");
+            distribuir(entrante); 
+          }else{
+
+            System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita IO");
+            entrante.setArrivalTime(arrivalTime + source.getR());
+            entrante.removeFirstSource();
+            arrivalTime = (entrante.getArrivalTime() * 1000);
+            while(procesos.containsKey(arrivalTime))
+                    arrivalTime++;
+            procesos.put(arrivalTime, entrante);
+          }
+                  
         }
       }
     }
@@ -61,21 +74,17 @@ public class HiloDespachador extends Thread {
   public void distribuir(Proceso proceso){
 
     // buscamos la cola con menos carga de procesos
-    int tam = colas.length;
+    int tam = this.colas.length;
     int iter = 0;
     MonitorCL minimo = null;
 
-    if (colas.length > 0) {
+    if (tam > 0) {
       
       minimo = colas[0];
-      iter++;
 
-      while(iter < tam){
-        int temp = colas[iter].getCarga();
-        if (minimo.getCarga() > temp) {
-          minimo = colas[iter];
-        }
-        iter++;
+      for (int i = 0; i < tam ; i++) {
+        if (minimo.getCarga() > colas[i].getCarga())
+          minimo = colas[i];        
       }
 
       minimo.addProcesoListo(0.0,proceso);

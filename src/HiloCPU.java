@@ -26,15 +26,13 @@ public class HiloCPU extends Thread {
 	public void run(){
 		Proceso procesoExec = null;
 		int auxiliar = 0;
+		int cpuTime;
+
 		while(true){
-			int tiempo_actual = time.getTime();
+			cpuTime = time.getTime();
 			
-      if (auxiliar != tiempo_actual) {
-        auxiliar = tiempo_actual;
-				System.out.println("CPU ["+ this.id +"] time :: " + tiempo_actual);				
-			}
-
-
+			//System.out.println("CPU ["+ this.id +"] time :: " + cpuTime);	
+			while (cpuTime == time.getTime());
 		}
 	
 	}
