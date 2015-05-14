@@ -2,7 +2,7 @@
 *	Clase ::	MonitorTime
 *	Descripcion :: Clase que define al monitor el tiempo del 
 *				   simulador 
-*	Estado :: Incompleto
+*	Estado :: Completo ?
 */
 
 import java.util.*;
@@ -14,7 +14,7 @@ public class MonitorTime{
   //retorna el tiempo actual del simulador
 	synchronized int getTime(){    
 
-    return proceso.getValue();
+    return this.time;
 	}
 
   //incrementa el tiempo

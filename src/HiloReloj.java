@@ -7,11 +7,13 @@
 public class HiloReloj extends Thread {
 	
   MonitorTime time = null;
+  Integer multiplier;
   public HiloReloj(MonitorTime time, Integer multiplier){
     super("Reloj");
     this.time = time;
+    this.multiplier= multiplier;
     System.out.println("Levantado Hilo Reloj = " + this);
-    
+
     start();
   }
 
@@ -21,7 +23,7 @@ public class HiloReloj extends Thread {
     
     while(true){ 
 
-      if (contador == (100 * multiplier)) {
+      if (contador == (100 * this.multiplier)) {
         this.time.tic();
         contador = 0;
       }else{
