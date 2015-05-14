@@ -22,14 +22,13 @@ public class HiloReloj extends Thread {
     int contador = 0;
     
     while(true){ 
-
-      if (contador == (100 * this.multiplier)) {
+      try{
+        this.sleep(100 * this.multiplier);
         this.time.tic();
-        contador = 0;
-      }else{
-        contador++;
+      }catch (InterruptedException e) {
+        System.out.println("Error :: actualizando el tiempo de la simulacion");
       }
-
+      
     }    
   }
 }

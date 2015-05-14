@@ -15,14 +15,6 @@ public class MonitorCL{
 
 	synchronized Proceso getProceso(){    
 
-    while (vacio) {
-      try {
-        wait();
-      } catch (InterruptedException e ) {
-        System.out.println("No se logro bloquear el acceso a un hilo");
-      }
-    }
-
     // extraemos el primer proceso de la cola
     Map.Entry<Double, Proceso> proceso = colaListos.pollFirstEntry();
     
@@ -38,10 +30,7 @@ public class MonitorCL{
     if (source.getL().equals("CPU")){
       carga = carga - source.getR() ;
     }
-    
-    // liberamos el monitor???
-    notify();
-
+  
 		return proceso.getValue();
 	}
 
@@ -59,7 +48,6 @@ public class MonitorCL{
 
     colaListos.put(peso, proceso);
     vacio = false;
-    notify();
 	
 	}
 
