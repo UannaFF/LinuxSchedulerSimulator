@@ -84,20 +84,25 @@ public class Main {
 	
 	public static void main(String args[]){
 
-		String process_file = "process_request_file.xml";
+		String processFile = "process_request_file.xml";
+        Integer multiplier;
 
 		if(args.length <= 0) {
 			System.out.println("Se necesita colocar cantidad de procesadores");
 			return;
-		}
+		}if (args.length > 1){
+            multiplier = Integer.parseInt(args[1]); //multiplicador para hacer mas lento el timer, por defecto sera 1
+        } else {
+            multiplier = 1;
+        }
 
-		Integer tiempo = new Integer(0);
+		MonitorTime time = new MonitorTime();
 
 		// levantamos el hilo relog que hara correr el tiempo
-		Hilo_reloj reloj = new Hilo_reloj(tiempo);
+		HiloReloj reloj = new HiloReloj(time, multiplier);
 
 		// Leer Archivo con lista de Procesos
-        readXML(process_file);
+        readXML(processFile);
 
         //llena un arraymap con los procesos previamente cargados y ordenados por tiempo de llegada
         while(procesosTreemap.firstEntry() != null) {
@@ -106,7 +111,7 @@ public class Main {
             //System.out.println("Elemento del treemap: "+proceso.getValue().toString());
         }
 
-		Hilo_despachador despachador = new Hilo_despachador(Integer.parseInt(args[0]), procesos);      
+		HiloDespachador despachador = new HiloDespachador(Integer.parseInt(args[0]), procesos, time);      
         
 	}
 
