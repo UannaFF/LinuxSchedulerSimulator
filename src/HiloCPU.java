@@ -15,7 +15,7 @@ public class HiloCPU extends Thread {
 		this.time = time;
 		System.out.println("Levantando Hilo CPU: " + this);
 
-    start();
+    	start();
 	}
 
 	public void run(){

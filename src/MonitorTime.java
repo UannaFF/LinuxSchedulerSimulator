@@ -14,14 +14,13 @@ public class MonitorTime{
   //retorna el tiempo actual del simulador
 	synchronized int getTime(){    
 
-    return this.time;
+    	return this.time;
 	}
 
   //incrementa el tiempo
 	synchronized void tic(){
 
-    this.time++;
-	
+    	this.time++;	
 	}
 	
 }
