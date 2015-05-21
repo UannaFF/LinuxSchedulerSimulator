@@ -113,6 +113,7 @@ public class Main {
         ventana.setResizable(true);
 
 		MonitorTime time = new MonitorTime();
+        MonitorIO io = new MonitorIO();
 
 		// levantamos el hilo relog que hara correr el tiempo
 		HiloReloj reloj = new HiloReloj(time, multiplier);
@@ -127,7 +128,7 @@ public class Main {
             //System.out.println("Elemento del treemap: "+proceso.toString());           
         }*/
 
-        HiloDespachador despachador = new HiloDespachador(Integer.parseInt(args[0]), procesosTreemap, time);  
+        HiloDespachador despachador = new HiloDespachador(Integer.parseInt(args[0]), procesosTreemap, time, io);  
 
         while(true){
             mainTime = time.getTime();

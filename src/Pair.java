@@ -1,4 +1,4 @@
-public class Pair<L,R> {
+public class Pair<L,R>{
     private L l;
     private R r;
     
@@ -21,6 +21,5 @@ public class Pair<L,R> {
 
     public void setR(R r){ 
         this.r = r; 
-
     }
 }

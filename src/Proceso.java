@@ -14,6 +14,7 @@ public class Proceso {
 	public Integer arrivalTime = 0;
 	public int priority = 0;
 	public ArrayList<Pair<String,Integer>> resources = null;
+	public Integer actual_cpu = null;
 
 	public Proceso(int pid, String s, int prior, Integer arriveT, ArrayList<Pair<String,Integer>> pAr){
 
@@ -27,6 +28,14 @@ public class Proceso {
 
 	public Integer getArrivalTime(){
 		return this.arrivalTime;
+	}
+
+	public Integer getActualCPU() {
+		return this.actual_cpu;
+	}
+
+	public void setActualCPU(int cpu) {
+		this.actual_cpu = cpu;
 	}
 
 	public void setArrivalTime(Integer arrivalTime){
@@ -46,7 +55,24 @@ public class Proceso {
 		}
 	}
 
+	public void restarFirstResource(Integer t) {
+		Pair<String, Integer> res = resources.get(0);
+		if(res.getL().equals("CPU")){
+		    Integer a_t = res.getR();
+		    if(a_t > t) {
+			    System.out.println("Source antes: "+t);
+			    res.setR(a_t-t);
+			} else {
+				System.out.println("El tamano a restar es mayor que el actual");
+			}
+		}
+	}
+
 	public String toString(){
 		return "( " + this.pid + ", arrivo=" + this.arrivalTime+" , prioridad="+ this.priority +")"; 
+	}
+
+	public Integer getPID() {
+		return this.pid;
 	}
 }
