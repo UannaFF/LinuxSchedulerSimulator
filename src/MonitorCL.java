@@ -14,6 +14,7 @@ public class MonitorCL{
     public int compare(Pair<Integer,Double> a, Pair<Integer,Double> b) {
         if(a.getR() == b.getR() && a.getL() == b.getL()) return 0;
         if(a.getR() < b.getR()) return -1;
+        else if(a.getR() == b.getR()) return 1;
         else return 1;
     }
   });
@@ -72,6 +73,7 @@ public class MonitorCL{
   synchronized void devolverProceso(Proceso proceso, Integer time_rec) {
     proceso.restarFirstResource(time_rec);
     addProcesoListo(new Pair<Integer, Double>(proceso.getPID(),0.0), proceso);
+    System.out.println(colaListos);
   }
 
   synchronized int getCarga(){

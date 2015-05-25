@@ -92,7 +92,7 @@ public class Main {
 	
 	public static void main(String args[]){
 
-		String processFile = "process_request_file.xml";
+		String processFile = "process_request_file2.xml";
         Integer multiplier;
         Ventana ventana = new Ventana();
         Integer mainTime;

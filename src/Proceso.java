@@ -62,6 +62,8 @@ public class Proceso {
 		    if(a_t > t) {
 			    System.out.println("Source antes: "+t);
 			    res.setR(a_t-t);
+			    this.arrivalTime = 0;
+			    //System.out.println(getFirstSource().toString());
 			} else {
 				System.out.println("El tamano a restar es mayor que el actual");
 			}

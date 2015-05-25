@@ -22,4 +22,8 @@ public class Pair<L,R>{
     public void setR(R r){ 
         this.r = r; 
     }
+
+    public String toString() {
+        return "First: "+this.l+"- Second: "+this.r;
+    }
 }

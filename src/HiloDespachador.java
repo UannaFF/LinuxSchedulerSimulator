@@ -88,7 +88,7 @@ public class HiloDespachador extends Thread {
 
   //Funcion que decido a que CPU se le va a asignar el proceso.
   public void distribuir(Proceso proceso){
-
+    System.out.println("Entro con proceso -> "+proceso);
     // buscamos la cola con menos carga de procesos
     int tam = this.colas.length;
     int iter = 0;
