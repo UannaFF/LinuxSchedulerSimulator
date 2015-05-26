@@ -27,8 +27,14 @@ public class MonitorCL{
   private int min_granularity = 4;
   private double totalPesos = 0.0;
   private boolean termin = false;
-  public MonitorCL(int id){
+  private Ventana ventana;
+  public MonitorCL(int id, Ventana v){
     this.id = id;
+    this.ventana = v;
+  }
+
+  synchronized void statProceso(Proceso p, int t) {
+    this.ventana.setStatProceso(p,t);
   }
 
 	synchronized Proceso getProceso(){    

@@ -15,6 +15,7 @@ public class HiloDespachador extends Thread {
   TreeMap<Integer, Proceso> procesos = null;
   HiloCPU cp[] = null;
   Ventana vent;
+  String estads = "";
 
 	HiloDespachador(int numCpu, TreeMap<Integer, Proceso> procesosTreemap, MonitorTime time, MonitorIO colaIO, Ventana ventana){
 		super("Despachador");
@@ -28,12 +29,11 @@ public class HiloDespachador extends Thread {
     this.procesos = procesosTreemap;
 
     for (int i = 0; i < numCpu ; i++) {
-      colas[i] = new MonitorCL(i);
+      colas[i] = new MonitorCL(i,ventana);
       HiloCPU cpu = new HiloCPU(colas[i], time, i , 4, colaIO, ventana);
       this.cp[i] = cpu;
     }
     this.vent = ventana;
-    vent.changeTitle();
 
     // levantamos los cpus requeridos y les asignamos sus colas de procesos listos
 
@@ -43,11 +43,12 @@ public class HiloDespachador extends Thread {
 		start(); // Arrancamos el despachador
 	}
 
-  public void terminate() {
+  public String terminate() {
     running = false;
     for(int i=0; i < numCpu; i++) {
-      cp[i].terminate();
+      estads += cp[i].terminate();
     }
+    return estads;
   }
 
   public void run(){ 
@@ -61,7 +62,9 @@ public class HiloDespachador extends Thread {
         Integer arrivalTimeIO = (procIO.get(i).getArrivalTime())*1000;
         while(procesos.containsKey(arrivalTimeIO))
           arrivalTimeIO++;
-        procesos.put(arrivalTimeIO, procIO.get(i));
+        Proceso p = procIO.get(i);
+        p.removeFirstSource();
+        procesos.put(arrivalTimeIO, p);
         //System.out.println("Proceso "+procIO.get(i).toString()+" llego con tiempo de IO.");
       }
       //
@@ -76,11 +79,9 @@ public class HiloDespachador extends Thread {
 
           if(source != null) {
             if (source.getL().equals("CPU")){
-
               System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita CPU");
               distribuir(entrante); 
             }else{
-
               System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita IO");
               entrante.setArrivalTime(arrivalTime + source.getR());
               entrante.removeFirstSource();
@@ -90,7 +91,13 @@ public class HiloDespachador extends Thread {
               procesos.put(arrivalTime, entrante);
             }
           } else {
-            //System.out.println("Se acabo el proceso");
+              String estadisticas = "\n Estadistica :: Proceso " + entrante.getPID() + "\n";
+              estadisticas += "               Tiempo salida :: " + time.getTime()+ "\n";
+              estadisticas += "               Tiempo de espera :: " + entrante.getTiempoEspera() + "\n";
+              estadisticas += "Termino en IO";
+              System.out.println(estadisticas);
+              estads += estadisticas;
+              //colas[0].statProceso(entrante, time.getTime());
           }
                   
         }

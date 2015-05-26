@@ -144,7 +144,8 @@ public class Main {
                 start = ventana.getStart();
             }
             reloj.terminate();
-            despachador.terminate();
+            String estads = despachador.terminate();
+            ventana.setStads(estads);
         }
 
 		    

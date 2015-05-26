@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.event.*;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 public class VentanaCPU extends JFrame{
 	private JLabel time, timeLabel, title;
@@ -9,15 +9,15 @@ public class VentanaCPU extends JFrame{
 	private JSpinner cpu;
 	private int cantCPU = 1;
 	private JPanel container;
-	private int offset[] = {10,30};
+	private int offset = 1;
 	
 	public VentanaCPU(int id) {
 		setLayout(null);
 		title=new JLabel("CPU "+id+": ");
 		//title.setBounds(10,10,60,5);
 		container = new JPanel();
-		container.setSize(300,900);
-		container.setLayout(new FlowLayout());
+		//container.setSize(300,900);
+		container.setLayout(new GridLayout(0, 1));
 		//container.pack();
 		container.add(title);
 		JScrollPane jsp = new JScrollPane(container);
@@ -27,9 +27,8 @@ public class VentanaCPU extends JFrame{
 
 	public void setLog(int t, int pid, String men) {
 		JLabel log = new JLabel("Tiempo "+t+":: El proceso "+pid+" "+men);
-		log.setBounds(offset[0], offset[1],250,5);
 		container.add(log);
+		offset++;
 		container.revalidate();
-		offset[1] = offset[1] + 10;
 	}
 }
