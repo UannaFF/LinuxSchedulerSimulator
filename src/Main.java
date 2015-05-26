@@ -99,9 +99,11 @@ public class Main {
         Proceso proceso;        
 
         //se despliega la ventana del simulador
-        ventana.setBounds(500,250,600,600); // (posx,posy,width,height)
-        ventana.setVisible(true);
         ventana.setResizable(true);
+
+        ventana.setSize ( 600, 600 );
+        ventana.setLocationRelativeTo ( null );
+        ventana.setVisible ( true );
 
 
         //llena un arraymap con los procesos previamente cargados y ordenados por tiempo de llegada

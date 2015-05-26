@@ -29,7 +29,7 @@ public class HiloDespachador extends Thread {
 
     for (int i = 0; i < numCpu ; i++) {
       colas[i] = new MonitorCL(i);
-      HiloCPU cpu = new HiloCPU(colas[i], time, i , 4, colaIO);
+      HiloCPU cpu = new HiloCPU(colas[i], time, i , 4, colaIO, ventana);
       this.cp[i] = cpu;
     }
     this.vent = ventana;

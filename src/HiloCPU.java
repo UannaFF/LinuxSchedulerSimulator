@@ -3,6 +3,8 @@
 *	Descripcion :: Clase que define el hilo de cada cpu del simulador
 *	Estado :: Incompleto
 */
+import javax.swing.*;
+import java.awt.event.*;
 
 public class HiloCPU extends Thread {
 
@@ -14,16 +16,25 @@ public class HiloCPU extends Thread {
 	int period = 20;
 	boolean running = true;
 	int tiempoOcioso = 0;
+	VentanaCPU ventanaCPU;
+	Ventana vent;
 
-	HiloCPU( MonitorCL colaListos, MonitorTime time, int id, int cuantum, MonitorIO monIO){
+	HiloCPU( MonitorCL colaListos, MonitorTime time, int id, int cuantum, MonitorIO monIO, Ventana v){
 		super("CPU");
 		this.colaListos = colaListos;
 		this.time = time;
 		this.id = id;
 		this.cuantum = cuantum;
 		this.colaIO = monIO;
+		this.ventanaCPU = new VentanaCPU(id);
+		this.vent = v;
 		//this.colaIO = colaIO;
 		System.out.println("Levantando Hilo CPU: " + this + " id :: " + this.id);
+		//Creando ventana
+		ventanaCPU.setBounds(700,0,300,300); // (posx,posy,width,height)
+        //ventanaCPU.setVisible(true);
+        ventanaCPU.setResizable(true);
+		ventanaCPU.setVisible ( true );
 
     start();
 	}
@@ -51,6 +62,7 @@ public class HiloCPU extends Thread {
 				firstTime = cpuTime+proceso.getTimeSlice();
 				cpuTime = cpuTime + proceso.getFirstSource().getR();
 				timeA = time.getTime();
+				ventanaCPU.setLog(timeA,proceso.getPID(),"ha llegado.");
 				System.out.println("CPU::Entro a CPU con proceso "+proceso+",llegada: "+llegadaUntouched+", firstTime: "+firstTime+", cpuTime: "+cpuTime);
 				while (cpuTime > timeA){
 					//System.out.println("CPU::Tiempo de sacada : "+firstTime);
