@@ -21,7 +21,7 @@ public class VentanaCPU extends JFrame{
 		//container.pack();
 		container.add(title);
 		JScrollPane jsp = new JScrollPane(container);
-		jsp.setSize(300,300);
+		jsp.setSize(500,500);
 		add(jsp);
 	}
 

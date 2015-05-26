@@ -129,10 +129,9 @@ public class Main {
             MonitorTime time = new MonitorTime();
             MonitorIO io = new MonitorIO();
             int cpus = ventana.getCantCPU();
-            multiplier = cpus; //Para hacer mas lento el timer
+            multiplier = 10; //Para hacer mas lento el timer
             // levantamos el hilo relog que hara correr el tiempo
             HiloReloj reloj = new HiloReloj(time, multiplier);
-
             // Leer Archivo con lista de Procesos
             readXML(processFile);
             HiloDespachador despachador = new HiloDespachador(cpus, procesosTreemap, time, io, ventana);

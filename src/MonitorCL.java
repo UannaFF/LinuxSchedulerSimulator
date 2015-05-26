@@ -93,7 +93,7 @@ public class MonitorCL{
       break;
     }
 
-    System.out.println("MONITOR:: min_vruntime -> "+min_vruntime);
+    //System.out.println("MONITOR:: min_vruntime -> "+min_vruntime);
     int tamArbol = colaListos.size();
     if(tamArbol < (sched_latency_ns/min_granularity))
       sched_period = sched_latency_ns;
@@ -106,9 +106,9 @@ public class MonitorCL{
     proceso.restarFirstResource(time_rec);
     //Se hace el balanceo, si el proceso tiene mas prioridad, vruntime sera menor y viceversa.
     double vruntime = proceso.getVruntime() + tiempoCPU * (1024/proceso.getPeso());
-    System.out.println("VRUNTIME:: "+vruntime);
+    //System.out.println("VRUNTIME:: "+vruntime);
     addProcesoListo(new Pair<Integer, Double>(proceso.getPID(),vruntime), proceso, tiempo);
-    System.out.println(colaListos);
+    //System.out.println(colaListos);
   }
 
   synchronized int getCarga(){
@@ -126,7 +126,7 @@ public class MonitorCL{
       Proceso value = entry.getValue();
       pesoTotal = pesoTotal + value.getPeso();
     }
-    System.out.println("Peso total: " + " => " + pesoTotal);
+    //System.out.println("Peso total: " + " => " + pesoTotal);
     return pesoTotal;
   }
 

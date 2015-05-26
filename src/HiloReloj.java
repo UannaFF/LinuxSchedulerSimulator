@@ -14,7 +14,7 @@ public class HiloReloj extends Thread {
     this.time = time;
     this.multiplier= multiplier;
     System.out.println("Levantado Hilo Reloj = " + this);
-
+    //setDaemon(true);
     start();
   }
 

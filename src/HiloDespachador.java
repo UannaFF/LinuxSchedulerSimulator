@@ -48,6 +48,7 @@ public class HiloDespachador extends Thread {
     for(int i=0; i < numCpu; i++) {
       estads += cp[i].terminate();
     }
+
     return estads;
   }
 
@@ -79,10 +80,10 @@ public class HiloDespachador extends Thread {
 
           if(source != null) {
             if (source.getL().equals("CPU")){
-              System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita CPU");
+              //System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita CPU");
               distribuir(entrante); 
             }else{
-              System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita IO");
+              //System.out.println("tiempo:: "+time.getTime()+" >> Un proceso solicita IO");
               entrante.setArrivalTime(arrivalTime + source.getR());
               entrante.removeFirstSource();
               arrivalTime = (entrante.getArrivalTime() * 1000);
@@ -108,7 +109,7 @@ public class HiloDespachador extends Thread {
 
   //Funcion que decido a que CPU se le va a asignar el proceso.
   public void distribuir(Proceso proceso){
-    System.out.println("Entro con proceso -> "+proceso);
+    //System.out.println("Entro con proceso -> "+proceso);
     // buscamos la cola con menos carga de procesos
     int tam = this.colas.length;
     int iter = 0;

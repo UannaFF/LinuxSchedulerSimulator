@@ -20,7 +20,7 @@
                 <UseTime>8</UseTime>
             </Resource>
             <Resource>
-                <ResourceType>IO</ResourceType>
+                <ResourceType>CPU</ResourceType>
                 <UseTime>8</UseTime>
             </Resource>
         </Requirements>
