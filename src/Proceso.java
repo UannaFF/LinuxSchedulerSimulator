@@ -17,6 +17,8 @@ public class Proceso {
 	public ArrayList<Pair<String,Integer>> resources = null;
 	public Integer actual_cpu = null;
 	public Double peso = 0.0;
+	public Double vruntime = 0.0;
+	public int timeSlice = 0;
 
 	public Proceso(int pid, String s, int prior, Integer arriveT, ArrayList<Pair<String,Integer>> pAr){
 
@@ -81,5 +83,21 @@ public class Proceso {
 
 	public Double getPeso() {
 		return this.peso;
+	}
+
+	public void setVruntime(double v) {
+		this.vruntime = v;
+	}
+
+	public double getVruntime() {
+		return this.vruntime;
+	}
+
+	public void setTimeSlice(int time) {
+		this.timeSlice = time;
+	}
+
+	public int getTimeSlice() {
+		return this.timeSlice;
 	}
 }

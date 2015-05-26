@@ -93,33 +93,16 @@ public class Main {
 	public static void main(String args[]){
 
 		String processFile = "process_request_file2.xml";
-        Integer multiplier;
+        Integer multiplier = 1;
         Ventana ventana = new Ventana();
         Integer mainTime;
         Proceso proceso;        
-
-		if(args.length <= 0) {
-			System.out.println("Se necesita colocar cantidad de procesadores");
-			return;
-		}if (args.length > 1){
-            multiplier = Integer.parseInt(args[1]); //multiplicador para hacer mas lento el timer, por defecto sera 1
-        } else {
-            multiplier = 1;
-        }
 
         //se despliega la ventana del simulador
         ventana.setBounds(500,250,600,600); // (posx,posy,width,height)
         ventana.setVisible(true);
         ventana.setResizable(true);
 
-		MonitorTime time = new MonitorTime();
-        MonitorIO io = new MonitorIO();
-
-		// levantamos el hilo relog que hara correr el tiempo
-		HiloReloj reloj = new HiloReloj(time, multiplier);
-
-		// Leer Archivo con lista de Procesos
-        readXML(processFile);
 
         //llena un arraymap con los procesos previamente cargados y ordenados por tiempo de llegada
         /*while(procesosTreemap.firstEntry() != null) {
@@ -127,14 +110,39 @@ public class Main {
             procesos.add(proceso); 
             //System.out.println("Elemento del treemap: "+proceso.toString());           
         }*/
+        while(true) {
 
-        HiloDespachador despachador = new HiloDespachador(Integer.parseInt(args[0]), procesosTreemap, time, io);  
+            //Esperando a que se comience, pulse el boton
+            boolean start = ventana.getStart();
+            boolean first = true;
+            multiplier = 1;
+            while(!start){
+                if(first) {
+                    System.out.println("Esperando start");
+                    first = false;
+                }
+                start = ventana.getStart();
+            }
 
-        while(true){
-            mainTime = time.getTime();
+            MonitorTime time = new MonitorTime();
+            MonitorIO io = new MonitorIO();
+            int cpus = ventana.getCantCPU();
+            multiplier = cpus; //Para hacer mas lento el timer
+            // levantamos el hilo relog que hara correr el tiempo
+            HiloReloj reloj = new HiloReloj(time, multiplier);
 
-            ventana.setTime(Integer.toString(mainTime));
-            while (mainTime == time.getTime());
+            // Leer Archivo con lista de Procesos
+            readXML(processFile);
+            HiloDespachador despachador = new HiloDespachador(cpus, procesosTreemap, time, io);
+            while(start){
+                mainTime = time.getTime();
+
+                ventana.setTime(Integer.toString(mainTime));
+                while (mainTime == time.getTime());
+                start = ventana.getStart();
+            }
+            reloj.terminate();
+            despachador.terminate();
         }
 
 		    

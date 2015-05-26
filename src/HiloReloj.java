@@ -8,6 +8,7 @@ public class HiloReloj extends Thread {
 	
   MonitorTime time = null;
   Integer multiplier;
+  boolean running = true;
   public HiloReloj(MonitorTime time, Integer multiplier){
     super("Reloj");
     this.time = time;
@@ -17,11 +18,15 @@ public class HiloReloj extends Thread {
     start();
   }
 
+  public void terminate() {
+    running = false;
+  }
+
   public void run(){ 
 
     int contador = 0;
     
-    while(true){ 
+    while(running){ 
       try{
         this.sleep(100 * this.multiplier);
         this.time.tic();
