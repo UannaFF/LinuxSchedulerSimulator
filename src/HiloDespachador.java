@@ -14,8 +14,9 @@ public class HiloDespachador extends Thread {
   boolean running = true;
   TreeMap<Integer, Proceso> procesos = null;
   HiloCPU cp[] = null;
+  Ventana vent;
 
-	HiloDespachador(int numCpu, TreeMap<Integer, Proceso> procesosTreemap, MonitorTime time, MonitorIO colaIO){
+	HiloDespachador(int numCpu, TreeMap<Integer, Proceso> procesosTreemap, MonitorTime time, MonitorIO colaIO, Ventana ventana){
 		super("Despachador");
 
     this.colas = new MonitorCL[numCpu];
@@ -31,7 +32,8 @@ public class HiloDespachador extends Thread {
       HiloCPU cpu = new HiloCPU(colas[i], time, i , 4, colaIO);
       this.cp[i] = cpu;
     }
-
+    this.vent = ventana;
+    vent.changeTitle();
 
     // levantamos los cpus requeridos y les asignamos sus colas de procesos listos
 

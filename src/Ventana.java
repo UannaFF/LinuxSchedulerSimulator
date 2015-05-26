@@ -20,8 +20,8 @@ public class Ventana extends JFrame{
 	startButton.setActionCommand("Start");
 	startButton.addActionListener(new ButtonClickListener()); 
 	title.setBounds(210,20,400,40);
-	timeLabel.setBounds(20,300,60,40);
-	time.setBounds(80,300,60,40);
+	timeLabel.setBounds(20,90,60,40);
+	time.setBounds(80,90,60,40);
 	startButton.setBounds(470,60,100,40);
 	cpu.setBounds(20,60,100,40);
 	add(cpu);
@@ -58,5 +58,9 @@ public class Ventana extends JFrame{
 
    public int getCantCPU() {
    		return this.cantCPU;
+   }
+
+   public void changeTitle() {
+   		title.setText("CHANGED");
    }
 }

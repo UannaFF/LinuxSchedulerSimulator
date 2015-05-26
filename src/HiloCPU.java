@@ -13,6 +13,7 @@ public class HiloCPU extends Thread {
 	MonitorIO colaIO = null;
 	int period = 20;
 	boolean running = true;
+	int tiempoOcioso = 0;
 
 	HiloCPU( MonitorCL colaListos, MonitorTime time, int id, int cuantum, MonitorIO monIO){
 		super("CPU");
@@ -37,6 +38,7 @@ public class HiloCPU extends Thread {
 		int cpuTime,firstTime,timeA;
 		int llegadaUntouched;
 		boolean termino = true;
+		int lastTime = time.getTime();
 
 		while(running){
 			cpuTime = time.getTime();
@@ -74,6 +76,11 @@ public class HiloCPU extends Thread {
 					} else {
 						System.out.println("CPU::Proceso "+proceso+" termino, no tiene mas recursos");
 					}
+				}
+			} else {
+				if(lastTime != time.getTime()) {
+					tiempoOcioso++;
+					lastTime = time.getTime();
 				}
 			}
 		}

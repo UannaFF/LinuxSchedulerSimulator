@@ -133,7 +133,7 @@ public class Main {
 
             // Leer Archivo con lista de Procesos
             readXML(processFile);
-            HiloDespachador despachador = new HiloDespachador(cpus, procesosTreemap, time, io);
+            HiloDespachador despachador = new HiloDespachador(cpus, procesosTreemap, time, io, ventana);
             while(start){
                 mainTime = time.getTime();
 
