@@ -5,6 +5,7 @@
 *	Estado :: Incompleto
 */
 import java.util.ArrayList;
+import java.lang.Math;
 
 
 public class Proceso {
@@ -15,6 +16,7 @@ public class Proceso {
 	public int priority = 0;
 	public ArrayList<Pair<String,Integer>> resources = null;
 	public Integer actual_cpu = null;
+	public Double peso = 0.0;
 
 	public Proceso(int pid, String s, int prior, Integer arriveT, ArrayList<Pair<String,Integer>> pAr){
 
@@ -23,7 +25,7 @@ public class Proceso {
 		this.arrivalTime = arriveT;
 		this.priority = prior;
 		this.resources = pAr;
-		
+		this.peso = (1024/java.lang.Math.pow(1.25,prior));
 	}
 
 	public Integer getArrivalTime(){
@@ -60,7 +62,6 @@ public class Proceso {
 		if(res.getL().equals("CPU")){
 		    Integer a_t = res.getR();
 		    if(a_t > t) {
-			    System.out.println("Source antes: "+t);
 			    res.setR(a_t-t);
 			    this.arrivalTime = 0;
 			    //System.out.println(getFirstSource().toString());
@@ -71,10 +72,14 @@ public class Proceso {
 	}
 
 	public String toString(){
-		return "( " + this.pid + ", arrivo=" + this.arrivalTime+" , prioridad="+ this.priority +")"; 
+		return "( " + this.pid + ", arrivo=" + this.arrivalTime+" , prioridad="+ this.priority +", peso = "+this.peso+")"; 
 	}
 
 	public Integer getPID() {
 		return this.pid;
+	}
+
+	public Double getPeso() {
+		return this.peso;
 	}
 }

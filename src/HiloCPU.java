@@ -52,7 +52,7 @@ public class HiloCPU extends Thread {
 					if(firstTime <= timeA && cpuTime >= firstTime) {
 						//Le resta el tiempo al resource
 						System.out.println("CPU::se saca al proceso "+proceso+"en tiempo "+timeA+", que entro en tiempo "+llegadaUntouched);
-						colaListos.devolverProceso(proceso, min_granularity);
+						colaListos.devolverProceso(proceso, min_granularity,timeA-llegadaUntouched);
 						termino = false;
 						break;
 					}

@@ -1,7 +1,18 @@
 <ProcessInfo>
     <Process>
         <ProcessType>RoundRobin</ProcessType>
-        <Priority>112</Priority>
+        <Priority>2</Priority>
+        <ArrivalTime>4</ArrivalTime>
+        <Requirements>
+            <Resource>
+                <ResourceType>CPU</ResourceType>
+                <UseTime>8</UseTime>
+            </Resource>
+        </Requirements>
+    </Process>
+    <Process>
+        <ProcessType>RoundRobin</ProcessType>
+        <Priority>0</Priority>
         <ArrivalTime>4</ArrivalTime>
         <Requirements>
             <Resource>

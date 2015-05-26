@@ -42,10 +42,8 @@ public class MonitorCL{
         if (source.getL().equals("CPU")){
           carga = carga - source.getR();
         }
-        System.out.println("Monitor tiempo:: "+" >> getProceso "+proceso.getValue());
     		return proceso.getValue();
       } else {
-        System.out.println("Monitor tiempo:: "+" >> Proceso se quedo sin resources");
         return null;
       }
     } else {
@@ -66,13 +64,19 @@ public class MonitorCL{
       pesoP++;*/
     colaListos.put(peso, proceso);
     vacio = false;
+    double a = getPesosCPU();
+    double porc = proceso.getPeso()/a;
+    System.out.println("Porcentaje de cpu que le toca al proceso entrante: "+porc);
 
     //System.out.println("Cola de Listos "+this.id+"= se agrego un nuevo proceso ["+ proceso.toString() +"] - Carga actual: "+this.carga);	
 	}
 
-  synchronized void devolverProceso(Proceso proceso, Integer time_rec) {
+  synchronized void devolverProceso(Proceso proceso, Integer time_rec, Integer tiempoCPU) {
     proceso.restarFirstResource(time_rec);
-    addProcesoListo(new Pair<Integer, Double>(proceso.getPID(),0.0), proceso);
+    //Se hace el balanceo, si el proceso tiene mas prioridad, vruntime sera menor y viceversa.
+    double vruntime = tiempoCPU * (1024/proceso.getPeso());
+    System.out.println("VRUNTIME:: "+vruntime);
+    addProcesoListo(new Pair<Integer, Double>(proceso.getPID(),vruntime), proceso);
     System.out.println(colaListos);
   }
 
@@ -83,5 +87,15 @@ public class MonitorCL{
   synchronized boolean isVacio() {
     return this.vacio;
   }
-	
+
+  double getPesosCPU() {
+    double pesoTotal = 0;
+    for(Map.Entry<Pair<Integer,Double>, Proceso> entry : colaListos.entrySet()) {
+      Pair<Integer,Double> key = entry.getKey();
+      Proceso value = entry.getValue();
+      pesoTotal = pesoTotal + value.getPeso();
+    }
+    System.out.println("Peso total: " + " => " + pesoTotal);
+    return pesoTotal;
+  }
 }
