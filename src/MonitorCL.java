@@ -52,7 +52,7 @@ public class MonitorCL{
     }
 	}
 
-	synchronized void addProcesoListo( Pair<Integer,Double> peso, Proceso proceso){
+	synchronized void addProcesoListo( Pair<Integer,Double> peso, Proceso proceso, int tiempo){
   
     Pair<String,Integer> source = proceso.getFirstSource();
 
@@ -62,6 +62,10 @@ public class MonitorCL{
     /*Double pesoP = (peso)*1000;
     while(colaListos.containsKey(pesoP))
       pesoP++;*/
+
+    // ESTADISTICA indica al proceso que empezo un periodo de espera
+    proceso.inicioEspera(tiempo);
+
     colaListos.put(peso, proceso);
     vacio = false;
     double a = getPesosCPU();
@@ -71,12 +75,12 @@ public class MonitorCL{
     //System.out.println("Cola de Listos "+this.id+"= se agrego un nuevo proceso ["+ proceso.toString() +"] - Carga actual: "+this.carga);	
 	}
 
-  synchronized void devolverProceso(Proceso proceso, Integer time_rec, Integer tiempoCPU) {
+  synchronized void devolverProceso(Proceso proceso, Integer time_rec, Integer tiempoCPU, int tiempo) {
     proceso.restarFirstResource(time_rec);
     //Se hace el balanceo, si el proceso tiene mas prioridad, vruntime sera menor y viceversa.
     double vruntime = tiempoCPU * (1024/proceso.getPeso());
     System.out.println("VRUNTIME:: "+vruntime);
-    addProcesoListo(new Pair<Integer, Double>(proceso.getPID(),vruntime), proceso);
+    addProcesoListo(new Pair<Integer, Double>(proceso.getPID(),vruntime), proceso, tiempo);
     System.out.println(colaListos);
   }
 

@@ -18,6 +18,9 @@ public class Proceso {
 	public Integer actual_cpu = null;
 	public Double peso = 0.0;
 
+	private int tiempoPivote = 0;
+	private int tiempoEspera = 0;
+
 	public Proceso(int pid, String s, int prior, Integer arriveT, ArrayList<Pair<String,Integer>> pAr){
 
 		this.pid = pid;
@@ -81,5 +84,20 @@ public class Proceso {
 
 	public Double getPeso() {
 		return this.peso;
+	}
+
+	//  guardamos el momento en el que el proceso entra a la cola de listos
+	public void inicioEspera(int tiempo){
+		tiempoPivote = tiempo;
+	}
+
+	// reiniciamos el pivote y calculamos el nuevo tiempo de espera.
+	public void finEspera(int tiempo){
+		tiempoEspera += tiempo - tiempoPivote;
+		tiempoPivote = 0;
+	}
+
+	public int getTiempoEspera(){
+		return tiempoEspera;
 	}
 }

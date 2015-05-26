@@ -108,7 +108,7 @@ public class HiloDespachador extends Thread {
         proceso.setActualCPU(minimo_pos);
         //Se crea la clase de comparacion para el treemap
         Pair<Integer,Double> p = new Pair<Integer,Double>(proceso.getPID(),0.0);
-        minimo.addProcesoListo(p,proceso);
+        minimo.addProcesoListo(p,proceso, time.getTime());
       }
     } else {
       //Se le pasa el proceso al CPU del que viene
@@ -123,7 +123,8 @@ public class HiloDespachador extends Thread {
           }
         }
       }
-      procesador_asigna.addProcesoListo(new Pair<Integer,Double>(proceso.getPID(),0.0),proceso);
+
+      procesador_asigna.addProcesoListo(new Pair<Integer,Double>(proceso.getPID(),0.0),proceso, time.getTime());
     }
   }
 

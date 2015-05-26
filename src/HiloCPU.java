@@ -14,6 +14,10 @@ public class HiloCPU extends Thread {
 	int min_granularity = 4;
 	int period = 20;
 
+	// ESTADISTICA tiempo de ocio del cpu
+	int pivoteOcio = 0;
+	int tiempoOcio = 0;
+
 	HiloCPU( MonitorCL colaListos, MonitorTime time, int id, int cuantum, MonitorIO monIO){
 		super("CPU");
 		this.colaListos = colaListos;
@@ -41,7 +45,11 @@ public class HiloCPU extends Thread {
 
 			//Toma el proceso y consume su tiempo
 			Proceso proceso = colaListos.getProceso();
+
 			if(proceso != null) {
+				// ESTADISTICA indica el cierre de un periodo de espera
+				proceso.finEspera(time.getTime());
+
 				firstTime = cpuTime+min_granularity;
 				cpuTime = cpuTime + proceso.getFirstSource().getR();
 				timeA = time.getTime();
@@ -52,7 +60,7 @@ public class HiloCPU extends Thread {
 					if(firstTime <= timeA && cpuTime >= firstTime) {
 						//Le resta el tiempo al resource
 						System.out.println("CPU::se saca al proceso "+proceso+"en tiempo "+timeA+", que entro en tiempo "+llegadaUntouched);
-						colaListos.devolverProceso(proceso, min_granularity,timeA-llegadaUntouched);
+						colaListos.devolverProceso(proceso, min_granularity,timeA-llegadaUntouched, time.getTime());
 						termino = false;
 						break;
 					}
@@ -67,9 +75,20 @@ public class HiloCPU extends Thread {
 						colaIO.addProcesoIO(proceso);
 						System.out.println("CPU::Pasa a la cola de IO");
 					} else {
-						System.out.println("CPU::Proceso "+proceso+" termino, no tiene mas recursos");
+						System.out.println("\n CPU::Proceso "+proceso+" termino, no solicita mas recursos");
+						
+						String estadisticas = "\n Estadistica :: Proceso " + proceso.getPID() + "\n";
+						estadisticas += "               Tiempo salida :: " + time.getTime()+ "\n";
+						estadisticas += "               Tiempo de espera :: " + proceso.getTiempoEspera() + "\n";
+						System.out.println(estadisticas);
 					}
 				}
+			}else{
+				if (pivoteOcio != cpuTime) {
+					tiempoOcio += cpuTime-pivoteOcio;
+					pivoteOcio = cpuTime ;
+				}
+				
 			}
 		}
 	
