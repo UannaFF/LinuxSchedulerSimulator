@@ -11,12 +11,16 @@ public class HiloDespachador extends Thread {
   MonitorCL colas[] = null;
   MonitorTime time = null;
   MonitorIO colaIO = null;
+  boolean running = true;
   TreeMap<Integer, Proceso> procesos = null;
+  HiloCPU cp[] = null;
+  Ventana vent;
 
-	HiloDespachador(int numCpu, TreeMap<Integer, Proceso> procesosTreemap, MonitorTime time, MonitorIO colaIO){
+	HiloDespachador(int numCpu, TreeMap<Integer, Proceso> procesosTreemap, MonitorTime time, MonitorIO colaIO, Ventana ventana){
 		super("Despachador");
 
     this.colas = new MonitorCL[numCpu];
+    this.cp = new HiloCPU[numCpu];
     this.numCpu = numCpu;
     this.time = time;
     this.colaIO = colaIO;
@@ -25,9 +29,11 @@ public class HiloDespachador extends Thread {
 
     for (int i = 0; i < numCpu ; i++) {
       colas[i] = new MonitorCL(i);
-      HiloCPU cpu = new HiloCPU(colas[i], time, i , 4, colaIO);
+      HiloCPU cpu = new HiloCPU(colas[i], time, i , 4, colaIO, ventana);
+      this.cp[i] = cpu;
     }
-
+    this.vent = ventana;
+    vent.changeTitle();
 
     // levantamos los cpus requeridos y les asignamos sus colas de procesos listos
 
@@ -37,10 +43,17 @@ public class HiloDespachador extends Thread {
 		start(); // Arrancamos el despachador
 	}
 
+  public void terminate() {
+    running = false;
+    for(int i=0; i < numCpu; i++) {
+      cp[i].terminate();
+    }
+  }
+
   public void run(){ 
     Pair<String,Integer> source;
     Integer arrivalTime;
-    while(true){
+    while(running){
       //Toma los elementos que estan en IO
       ArrayList<Proceso> procIO = colaIO.getProcesosIO();
       //System.out.println("Llegaron "+procIO.size()+" procesos para IO.");
@@ -107,24 +120,28 @@ public class HiloDespachador extends Thread {
         }
         proceso.setActualCPU(minimo_pos);
         //Se crea la clase de comparacion para el treemap
-        Pair<Integer,Double> p = new Pair<Integer,Double>(proceso.getPID(),0.0);
+
+        Pair<Integer,Double> p = new Pair<Integer,Double>(proceso.getPID(),minimo.getMinVruntime());
         minimo.addProcesoListo(p,proceso, time.getTime());
+
       }
     } else {
+      boolean other = false;
       //Se le pasa el proceso al CPU del que viene
       MonitorCL procesador_asigna = colas[proceso.getActualCPU()];
+      double vruntime = proceso.getVruntime();
       //Si hay otro procesador que este vacio y el asignado esta trabajando, se pasa al ocioso
       if(!procesador_asigna.isVacio()){
         for(int i=0; i<tam; i++) {
           if(colas[i].isVacio()) {
             procesador_asigna = colas[i];
             proceso.setActualCPU(i);
+            vruntime = procesador_asigna.getMinVruntime();
             break;
           }
         }
       }
-
-      procesador_asigna.addProcesoListo(new Pair<Integer,Double>(proceso.getPID(),0.0),proceso, time.getTime());
+      procesador_asigna.addProcesoListo(new Pair<Integer,Double>(proceso.getPID(),vruntime),proceso, time.getTime());
     }
   }
 

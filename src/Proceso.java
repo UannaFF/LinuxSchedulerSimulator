@@ -17,6 +17,8 @@ public class Proceso {
 	public ArrayList<Pair<String,Integer>> resources = null;
 	public Integer actual_cpu = null;
 	public Double peso = 0.0;
+	public Double vruntime = 0.0;
+	public int timeSlice = 0;
 
 	private int tiempoPivote = 0;
 	private int tiempoEspera = 0;
@@ -99,5 +101,21 @@ public class Proceso {
 
 	public int getTiempoEspera(){
 		return tiempoEspera;
+	}
+
+	public void setVruntime(double v) {
+		this.vruntime = v;
+	}
+
+	public double getVruntime() {
+		return this.vruntime;
+	}
+
+	public void setTimeSlice(int time) {
+		this.timeSlice = time;
+	}
+
+	public int getTimeSlice() {
+		return this.timeSlice;
 	}
 }

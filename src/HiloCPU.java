@@ -3,6 +3,8 @@
 *	Descripcion :: Clase que define el hilo de cada cpu del simulador
 *	Estado :: Incompleto
 */
+import javax.swing.*;
+import java.awt.event.*;
 
 public class HiloCPU extends Thread {
 
@@ -11,24 +13,39 @@ public class HiloCPU extends Thread {
 	MonitorCL colaListos = null;
 	MonitorTime time = null;
 	MonitorIO colaIO = null;
-	int min_granularity = 4;
 	int period = 20;
+	boolean running = true;
+	int tiempoOcioso = 0;
+	VentanaCPU ventanaCPU;
+	Ventana vent;
 
 	// ESTADISTICA tiempo de ocio del cpu
 	int pivoteOcio = 0;
 	int tiempoOcio = 0;
 
-	HiloCPU( MonitorCL colaListos, MonitorTime time, int id, int cuantum, MonitorIO monIO){
+	HiloCPU( MonitorCL colaListos, MonitorTime time, int id, int cuantum, MonitorIO monIO, Ventana v){
+
 		super("CPU");
 		this.colaListos = colaListos;
 		this.time = time;
 		this.id = id;
 		this.cuantum = cuantum;
 		this.colaIO = monIO;
+		this.ventanaCPU = new VentanaCPU(id);
+		this.vent = v;
 		//this.colaIO = colaIO;
 		System.out.println("Levantando Hilo CPU: " + this + " id :: " + this.id);
+		//Creando ventana
+		ventanaCPU.setBounds(700,0,300,300); // (posx,posy,width,height)
+        //ventanaCPU.setVisible(true);
+        ventanaCPU.setResizable(true);
+		ventanaCPU.setVisible ( true );
 
     start();
+	}
+
+	public void terminate() {
+		running = false;
 	}
 
 	public void run(){
@@ -37,8 +54,9 @@ public class HiloCPU extends Thread {
 		int cpuTime,firstTime,timeA;
 		int llegadaUntouched;
 		boolean termino = true;
+		int lastTime = time.getTime();
 
-		while(true){
+		while(running){
 			cpuTime = time.getTime();
 			llegadaUntouched = cpuTime;
 			termino = true;
@@ -50,9 +68,11 @@ public class HiloCPU extends Thread {
 				// ESTADISTICA indica el cierre de un periodo de espera
 				proceso.finEspera(time.getTime());
 
-				firstTime = cpuTime+min_granularity;
+				firstTime = cpuTime+proceso.getTimeSlice();
+
 				cpuTime = cpuTime + proceso.getFirstSource().getR();
 				timeA = time.getTime();
+				ventanaCPU.setLog(timeA,proceso.getPID(),"ha llegado.");
 				System.out.println("CPU::Entro a CPU con proceso "+proceso+",llegada: "+llegadaUntouched+", firstTime: "+firstTime+", cpuTime: "+cpuTime);
 				while (cpuTime > timeA){
 					//System.out.println("CPU::Tiempo de sacada : "+firstTime);
@@ -60,7 +80,9 @@ public class HiloCPU extends Thread {
 					if(firstTime <= timeA && cpuTime >= firstTime) {
 						//Le resta el tiempo al resource
 						System.out.println("CPU::se saca al proceso "+proceso+"en tiempo "+timeA+", que entro en tiempo "+llegadaUntouched);
-						colaListos.devolverProceso(proceso, min_granularity,timeA-llegadaUntouched, time.getTime());
+
+						colaListos.devolverProceso(proceso, proceso.getTimeSlice(),timeA-llegadaUntouched, time.getTime());
+
 						termino = false;
 						break;
 					}
@@ -72,6 +94,7 @@ public class HiloCPU extends Thread {
 					Pair<String, Integer> source = proceso.getFirstSource();
 					if(source != null) {
 						proceso.setArrivalTime(time.getTime()+source.getR());
+						proceso.setVruntime(proceso.getVruntime() + (timeA-llegadaUntouched) * (1024/proceso.getPeso()));
 						colaIO.addProcesoIO(proceso);
 						System.out.println("CPU::Pasa a la cola de IO");
 					} else {
@@ -89,6 +112,13 @@ public class HiloCPU extends Thread {
 					pivoteOcio = cpuTime ;
 				}
 				
+/*
+			} else {
+				if(lastTime != time.getTime()) {
+					tiempoOcioso++;
+					lastTime = time.getTime();
+				}
+*/
 			}
 		}
 	
