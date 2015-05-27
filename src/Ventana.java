@@ -138,8 +138,8 @@ public class Ventana extends JFrame{
    }
 
    public void setStads(Estadisticas estadisticas){
-   		this.tiempoEspera.setText("Tiempo ocioso promedio:"+Double.toString(estadisticas.getEspera()));
-         this.tiempoOcio.setText("Tiempo de ejecucion promedio:"+Double.toString(estadisticas.getOcio()));
-         this.tiempoEjecucion.setText("Tiempo de espera promedio:"+Double.toString(estadisticas.getEjecucion()));
+   		this.tiempoEspera.setText("Tiempo espera promedio:"+Double.toString(estadisticas.getEspera()));
+         this.tiempoOcio.setText("Tiempo de ocio promedio:"+Double.toString(estadisticas.getOcio()));
+         this.tiempoEjecucion.setText("Tiempo de ejecucion promedio:"+Double.toString(estadisticas.getEjecucion()));
    }
 }
