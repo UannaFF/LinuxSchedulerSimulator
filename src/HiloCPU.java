@@ -132,9 +132,9 @@ public class HiloCPU extends Thread {
 				}
 				ultSalida = timeA;
 			} else {
-				if(lastTime != time.getTime()) {
-					tiempoOcioso++;
-					lastTime = time.getTime();
+				if (pivoteOcio != cpuTime) {
+					tiempoOcio += cpuTime-pivoteOcio;
+					pivoteOcio = cpuTime ;
 				}
 				
 /*
