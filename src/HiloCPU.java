@@ -48,12 +48,12 @@ public class HiloCPU extends Thread {
     start();
 	}
 
-	public String terminate() {
+	public int terminate() {
 		running = false;
-		String tiempoO = "\n Estadistica CPU "+this.id+":: Tiempo ocioso -> " + tiempoOcio + "\n";
-		System.out.println(tiempoO);
+		//String tiempoO = "\n Estadistica CPU "+this.id+":: Tiempo ocioso -> " + tiempoOcio + "\n";
+		//System.out.println(tiempoO);
 		System.out.println("Tiempo de salida del ultimo proceso: "+ultSalida);
-		return estads;
+		return tiempoOcio;
 	}
 
 	public void run(){
@@ -75,17 +75,17 @@ public class HiloCPU extends Thread {
 				// ESTADISTICA indica el cierre de un periodo de espera
 				proceso.finEspera(time.getTime());
 
-				firstTime = cpuTime+proceso.getTimeSlice();
+				firstTime = cpuTime+proceso.getTimeSlice();				
 
 				cpuTime = cpuTime + proceso.getFirstSource().getR();
 				timeA = time.getTime();
 				ventanaCPU.setLog(timeA,proceso.getPID(),"ha llegado.");
 				//System.out.println("CPU::LLEGOOOOEntro a CPU con proceso "+proceso+",llegada: "+llegadaUntouched+", firstTime: "+firstTime+", cpuTime: "+cpuTime);
 				while (cpuTime > timeA){
-					//System.out.println("CPU::Tiempo de sacada : "+firstTime);
 					//System.out.println("CPU::Tiempo de iteracion : "+timeA);
 					if(firstTime <= timeA && cpuTime >= firstTime) {
 						//Le resta el tiempo al resource
+						System.out.println("slice:"+proceso.getTimeSlice());
 						System.out.println("CPU::se saca al proceso "+proceso+"en tiempo "+timeA+", que entro en tiempo "+llegadaUntouched);
 
 						colaListos.devolverProceso(proceso, proceso.getTimeSlice(),timeA-llegadaUntouched, time.getTime());
@@ -100,6 +100,17 @@ public class HiloCPU extends Thread {
 					ventanaCPU.setLog(timeA,proceso.getPID(),"termino su tiempo de CPU.");
 					proceso.removeFirstSource();
 					Pair<String, Integer> source = proceso.getFirstSource();
+					if (source == null){
+						proceso.setArrivalTime(time.getTime());
+					}else{
+						proceso.setArrivalTime(time.getTime()+source.getR());
+					}
+					
+					proceso.setVruntime(proceso.getVruntime() + (timeA-llegadaUntouched) * (1024/proceso.getPeso()));
+					colaIO.addProcesoIO(proceso);
+					ventanaCPU.setLog(timeA,proceso.getPID(),"pasa a esperar IO.");
+					System.out.println("CPU::Pasa a la cola de IO");
+					/*
 					if(source != null) {
 						proceso.setArrivalTime(time.getTime()+source.getR());
 						proceso.setVruntime(proceso.getVruntime() + (timeA-llegadaUntouched) * (1024/proceso.getPeso()));
@@ -115,14 +126,15 @@ public class HiloCPU extends Thread {
 						System.out.println(estadisticas);
 						estads += estadisticas;
 					}
+					*/
 				} else {
 					ventanaCPU.setLog(timeA,proceso.getPID(),"se ha sacado para darle paso a otro.");
 				}
 				ultSalida = timeA;
-			}else{
-				if (pivoteOcio != cpuTime) {
-					tiempoOcio += cpuTime-pivoteOcio;
-					pivoteOcio = cpuTime ;
+			} else {
+				if(lastTime != time.getTime()) {
+					tiempoOcioso++;
+					lastTime = time.getTime();
 				}
 				
 /*

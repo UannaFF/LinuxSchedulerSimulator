@@ -68,7 +68,7 @@ public class Proceso {
 		    Integer a_t = res.getR();
 		    if(a_t > t) {
 			    res.setR(a_t-t);
-			    this.arrivalTime = 0;
+			    this.arrivalTime += a_t;
 			    //System.out.println(getFirstSource().toString());
 			} else {
 				System.out.println("El tamano a restar es mayor que el actual");
@@ -112,7 +112,10 @@ public class Proceso {
 	}
 
 	public void setTimeSlice(int time) {
-		this.timeSlice = time;
+		if (time < 4)
+			this.timeSlice = 4;
+		else
+			this.timeSlice = time;
 	}
 
 	public int getTimeSlice() {

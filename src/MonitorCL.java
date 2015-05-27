@@ -126,7 +126,7 @@ public class MonitorCL{
       Proceso value = entry.getValue();
       pesoTotal = pesoTotal + value.getPeso();
     }
-    //System.out.println("Peso total: " + " => " + pesoTotal);
+    System.out.println("Peso total: " + " => " + pesoTotal);
     return pesoTotal;
   }
 

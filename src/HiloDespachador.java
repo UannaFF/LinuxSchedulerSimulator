@@ -8,6 +8,8 @@ import java.util.*;
 public class HiloDespachador extends Thread {
 	
   int numCpu = 0;
+  Double numProc = 0.0;
+  Double tiempoEspera= 0.0;
   MonitorCL colas[] = null;
   MonitorTime time = null;
   MonitorIO colaIO = null;
@@ -27,14 +29,12 @@ public class HiloDespachador extends Thread {
     this.colaIO = colaIO;
     //Contiene todos los procesos
     this.procesos = procesosTreemap;
-
     for (int i = 0; i < numCpu ; i++) {
       colas[i] = new MonitorCL(i,ventana);
       HiloCPU cpu = new HiloCPU(colas[i], time, i , 4, colaIO, ventana);
       this.cp[i] = cpu;
     }
     this.vent = ventana;
-
     // levantamos los cpus requeridos y les asignamos sus colas de procesos listos
 
     //-----------------------asignar procesos de la cola general a la cola de procesos de cada cpu
@@ -43,13 +43,22 @@ public class HiloDespachador extends Thread {
 		start(); // Arrancamos el despachador
 	}
 
-  public String terminate() {
+  public Estadisticas terminate() {
     running = false;
+    Double ocioPromedio=0.0;
+    Estadisticas estadisticas = new Estadisticas();
+    //construir un objeto estadisticas con estadisticas de tiempo de ocio, tiempo de ejecucion y tiempo de espera (promedios)
     for(int i=0; i < numCpu; i++) {
-      estads += cp[i].terminate();
+      ocioPromedio += cp[i].terminate();
     }
-
-    return estads;
+    ocioPromedio = ocioPromedio / numCpu;
+    estadisticas.setOcio(ocioPromedio);
+    estadisticas.setEjecucion(time.getTime()-ocioPromedio);
+    estadisticas.setEspera(tiempoEspera/numProc);
+    System.out.println("ocioPromedio::"+ocioPromedio);
+    System.out.println("ejecucionPromedio::"+(time.getTime()-ocioPromedio));
+    System.out.println("esperaPromedio::"+tiempoEspera/numProc);
+    return estadisticas;
   }
 
   public void run(){ 
@@ -92,15 +101,10 @@ public class HiloDespachador extends Thread {
               procesos.put(arrivalTime, entrante);
             }
           } else {
-              String estadisticas = "\n Estadistica :: Proceso " + entrante.getPID() + "\n";
-              estadisticas += "               Tiempo salida :: " + time.getTime()+ "\n";
-              estadisticas += "               Tiempo de espera :: " + entrante.getTiempoEspera() + "\n";
-              estadisticas += "Termino en IO";
-              System.out.println(estadisticas);
-              estads += estadisticas;
+            tiempoEspera = tiempoEspera+entrante.getTiempoEspera();
+            numProc++;
               //colas[0].statProceso(entrante, time.getTime());
-          }
-                  
+          }                  
         }
       }
     }

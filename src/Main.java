@@ -92,8 +92,8 @@ public class Main {
 	
 	public static void main(String args[]){
 
-		String processFile = "process_request_file2.xml";
-        Integer multiplier = 1;
+		String processFile;
+        Integer multiplier;
         Ventana ventana = new Ventana();
         Integer mainTime;
         Proceso proceso;        
@@ -129,7 +129,9 @@ public class Main {
             MonitorTime time = new MonitorTime();
             MonitorIO io = new MonitorIO();
             int cpus = ventana.getCantCPU();
-            multiplier = 10; //Para hacer mas lento el timer
+            multiplier = ventana.getMultiplier();
+            processFile = ventana.getFile();
+            System.out.println("archivo:"+processFile);
             // levantamos el hilo relog que hara correr el tiempo
             HiloReloj reloj = new HiloReloj(time, multiplier);
             // Leer Archivo con lista de Procesos
@@ -143,7 +145,7 @@ public class Main {
                 start = ventana.getStart();
             }
             reloj.terminate();
-            String estads = despachador.terminate();
+            Estadisticas estads = despachador.terminate();
             ventana.setStads(estads);
         }
 

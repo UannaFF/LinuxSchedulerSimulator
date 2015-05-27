@@ -9,7 +9,6 @@ public class VentanaCPU extends JFrame{
 	private JSpinner cpu;
 	private int cantCPU = 1;
 	private JPanel container;
-	private int offset = 1;
 	
 	public VentanaCPU(int id) {
 		setLayout(null);
@@ -28,7 +27,6 @@ public class VentanaCPU extends JFrame{
 	public void setLog(int t, int pid, String men) {
 		JLabel log = new JLabel("Tiempo "+t+":: El proceso "+pid+" "+men);
 		container.add(log);
-		offset++;
 		container.revalidate();
 	}
 }
