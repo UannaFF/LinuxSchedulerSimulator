@@ -110,6 +110,9 @@ public class HiloCPU extends Thread {
 					colaIO.addProcesoIO(proceso);
 					ventanaCPU.setLog(timeA,proceso.getPID(),"pasa a esperar IO.");
 					System.out.println("CPU::Pasa a la cola de IO");
+
+					
+
 					/*
 					if(source != null) {
 						proceso.setArrivalTime(time.getTime()+source.getR());
@@ -129,6 +132,7 @@ public class HiloCPU extends Thread {
 					*/
 				} else {
 					ventanaCPU.setLog(timeA,proceso.getPID(),"se ha sacado para darle paso a otro.");
+					pivoteOcio = cpuTime;
 				}
 				ultSalida = timeA;
 			} else {
@@ -136,14 +140,6 @@ public class HiloCPU extends Thread {
 					tiempoOcio += cpuTime-pivoteOcio;
 					pivoteOcio = cpuTime ;
 				}
-				
-/*
-			} else {
-				if(lastTime != time.getTime()) {
-					tiempoOcioso++;
-					lastTime = time.getTime();
-				}
-*/
 			}
 		}
 	
