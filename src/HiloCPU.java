@@ -20,6 +20,7 @@ public class HiloCPU extends Thread {
 	Ventana vent;
 	String estads = "";
 	int ultSalida = 0;
+	int acumuladoTO = 0, tEjecucion = 0;
 
 	// ESTADISTICA tiempo de ocio del cpu
 	int pivoteOcio = 0;
@@ -48,12 +49,9 @@ public class HiloCPU extends Thread {
     start();
 	}
 
-	public int terminate() {
+	public Pair<Integer,Integer> terminate() {
 		running = false;
-		//String tiempoO = "\n Estadistica CPU "+this.id+":: Tiempo ocioso -> " + tiempoOcio + "\n";
-		//System.out.println(tiempoO);
-		System.out.println("Tiempo de salida del ultimo proceso: "+ultSalida);
-		return tiempoOcio;
+		return new Pair<Integer,Integer>(tiempoOcio,tEjecucion);
 	}
 
 	public void run(){
@@ -135,10 +133,17 @@ public class HiloCPU extends Thread {
 					pivoteOcio = cpuTime;
 				}
 				ultSalida = timeA;
+				tiempoOcio += acumuladoTO;
+				acumuladoTO = 0;
+				tEjecucion += timeA - llegadaUntouched;
 			} else {
-				if (pivoteOcio != cpuTime) {
+				/*if (pivoteOcio != cpuTime) {
 					tiempoOcio += cpuTime-pivoteOcio;
 					pivoteOcio = cpuTime ;
+				}*/
+				if(time.getTime() != ultSalida) {
+					acumuladoTO += 1;
+					ultSalida = time.getTime();
 				}
 			}
 		}

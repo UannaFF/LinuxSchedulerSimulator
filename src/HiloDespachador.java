@@ -48,16 +48,20 @@ public class HiloDespachador extends Thread {
     Double ocioPromedio=0.0;
     Estadisticas estadisticas = new Estadisticas();
     //construir un objeto estadisticas con estadisticas de tiempo de ocio, tiempo de ejecucion y tiempo de espera (promedios)
+    int tA = time.getTime();
+    double tEjecucion = 0.0;
     for(int i=0; i < numCpu; i++) {
-      ocioPromedio += cp[i].terminate();
+      Pair<Integer,Integer> tOE = cp[i].terminate();
+      ocioPromedio += tOE.getL();
+      tEjecucion += tOE.getR();
     }
     ocioPromedio = ocioPromedio / numCpu;
     estadisticas.setOcio(ocioPromedio);
-    estadisticas.setEjecucion(time.getTime()-ocioPromedio);
+    estadisticas.setEjecucion(tEjecucion);
     estadisticas.setEspera(tiempoEspera/numProc);
-    System.out.println("ocioPromedio::"+ocioPromedio);
+   /* System.out.println("ocioPromedio::"+ocioPromedio);
     System.out.println("ejecucionPromedio::"+(time.getTime()-ocioPromedio));
-    System.out.println("esperaPromedio::"+tiempoEspera/numProc);
+    System.out.println("esperaPromedio::"+tiempoEspera/numProc);*/
     return estadisticas;
   }
 

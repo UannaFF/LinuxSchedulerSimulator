@@ -29,4 +29,8 @@ public class VentanaCPU extends JFrame{
 		container.add(log);
 		container.revalidate();
 	}
+
+	public void close() {
+		this.dispose();
+	}
 }

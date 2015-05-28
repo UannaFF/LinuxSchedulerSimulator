@@ -96,6 +96,10 @@ public class Ventana extends JFrame{
 
    }
 
+   	public void close() {
+		this.dispose();
+	}
+
    public boolean getStart() {
       	return this.start;
    }

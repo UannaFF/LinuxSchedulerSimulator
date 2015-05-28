@@ -96,7 +96,8 @@ public class Main {
         Integer multiplier;
         Ventana ventana = new Ventana();
         Integer mainTime;
-        Proceso proceso;        
+        Proceso proceso;
+        HiloDespachador despachador = null;       
 
         //se despliega la ventana del simulador
         ventana.setResizable(true);
@@ -105,15 +106,8 @@ public class Main {
         ventana.setLocationRelativeTo ( null );
         ventana.setVisible ( true );
 
-
-        //llena un arraymap con los procesos previamente cargados y ordenados por tiempo de llegada
-        /*while(procesosTreemap.firstEntry() != null) {
-            proceso = procesosTreemap.pollFirstEntry().getValue();
-            procesos.add(proceso); 
-            //System.out.println("Elemento del treemap: "+proceso.toString());           
-        }*/
+        //Ciclo principal del programa
         while(true) {
-
             //Esperando a que se comience, pulse el boton
             boolean start = ventana.getStart();
             boolean first = true;
@@ -136,7 +130,8 @@ public class Main {
             HiloReloj reloj = new HiloReloj(time, multiplier);
             // Leer Archivo con lista de Procesos
             readXML(processFile);
-            HiloDespachador despachador = new HiloDespachador(cpus, procesosTreemap, time, io, ventana);
+            despachador = new HiloDespachador(cpus, procesosTreemap, time, io, ventana);
+            //Ciclo de ejecucion de la simulacion.
             while(start){
                 mainTime = time.getTime();
 
@@ -144,6 +139,7 @@ public class Main {
                 while (mainTime == time.getTime());
                 start = ventana.getStart();
             }
+            //Si se para la simulacion se destruyen los hilos y se muestran las estadisticas
             reloj.terminate();
             Estadisticas estads = despachador.terminate();
             ventana.setStads(estads);
