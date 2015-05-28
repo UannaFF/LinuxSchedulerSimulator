@@ -57,7 +57,7 @@ public class HiloDespachador extends Thread {
     }
     ocioPromedio = ocioPromedio / numCpu;
     estadisticas.setOcio(ocioPromedio);
-    estadisticas.setEjecucion(tEjecucion);
+    estadisticas.setEjecucion(tEjecucion/numCpu);
     estadisticas.setEspera(tiempoEspera/numProc);
    /* System.out.println("ocioPromedio::"+ocioPromedio);
     System.out.println("ejecucionPromedio::"+(time.getTime()-ocioPromedio));
